@@ -1,55 +1,139 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <style>
-    body {
-      margin: 0;
-      background: #f0f0f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .slider-container {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    input[type=range] {
-      writing-mode: bt-lr; /* vertical */
-      -webkit-appearance: slider-vertical;
-      width: 100vh;
-      height: 30px;
-      transform: rotate(270deg);
-      accent-color: #007bff;
-      cursor: pointer;
-      background: transparent;
-    }
-
-    input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      height: 20px;
-      width: 20px;
-      background: #007bff;
-      border-radius: 50%;
-      border: 2px solid #fff;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    }
-
-    input[type=range]::-webkit-slider-runnable-track {
-      background: #ddd;
-      height: 5px;
-      border-radius: 3px;
-    }
-  </style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .slider-overlay {
+            position: fixed;
+            top: 0;
+            right: 20px;
+            width: auto;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 90vh;
+            pointer-events: all;
+        }
+        
+        .slider-vertical {
+            writing-mode: bt-lr;
+            -webkit-appearance: slider-vertical;
+            width: 8px;
+            height: 80vh;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .slider-vertical:hover {
+            background: rgba(255, 255, 255, 0.3);
+            width: 12px;
+        }
+        
+        .slider-vertical::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid white;
+            transition: all 0.3s ease;
+        }
+        
+        .slider-vertical::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Pour les navigateurs Firefox */
+        .slider-vertical::-moz-range-track {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            border: none;
+        }
+        
+        .slider-vertical::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Animation d'apparition */
+        .slider-overlay {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="slider-container">
-    <input type="range" min="0" max="100" value="50">
-  </div>
+    <div class="slider-overlay">
+        <div class="slider-container">
+            <input type="range" 
+                   min="0" 
+                   max="100" 
+                   value="50" 
+                   class="slider-vertical" 
+                   id="verticalSlider"
+                   orient="vertical">
+        </div>
+    </div>
+
+    <script>
+        const slider = document.getElementById('verticalSlider');
+        
+        slider.addEventListener('input', function() {
+            valueDisplay.textContent = this.value;
+        });
+        
+        // Optionnel : Gérer les touches du clavier
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp') {
+                slider.value = Math.min(parseInt(slider.value) + 1, 100);
+                valueDisplay.textContent = slider.value;
+            } else if (e.key === 'ArrowDown') {
+                slider.value = Math.max(parseInt(slider.value) - 1, 0);
+                valueDisplay.textContent = slider.value;
+            }
+        });
+    </script>
 </body>
 </html>
